@@ -258,3 +258,4 @@ C:\Users\aibes\source\repos\Koreik\Koreik\obj\Debug\net6.0\Koreik.dll
 C:\Users\aibes\source\repos\Koreik\Koreik\obj\Debug\net6.0\ref\Koreik.dll
 C:\Users\aibes\source\repos\Koreik\Koreik\obj\Debug\net6.0\Koreik.pdb
 C:\Users\aibes\source\repos\Koreik\Koreik\obj\Debug\net6.0\Koreik.genruntimeconfig.cache
+C:\Users\aibes\source\repos\Koreik\Koreik\obj\Debug\net6.0\Koreik.csproj.AssemblyReference.cache
