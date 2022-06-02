@@ -47,19 +47,6 @@ namespace Koreik.Controllers
             return school.Id;
         }
 
-        [HttpPost]
-        [Route("api/create/klass")]
-        public async Task<Guid> CreateKlass(KlassModels klassModel)
-        {
-            var klass = new Klass();
-            klass.Name = klassModel.Name;
-            klass.SchoolId = klassModel.SchoolId;
-            await _context.Klasses.AddAsync(klass);
-            await _context.SaveChangesAsync();
-            return klass.Id;
-        }
-        
-        
         [HttpGet]
         [Route("api/subjects")]
         public async Task<IEnumerable<TutorModels>> GetSubjects()
@@ -76,29 +63,5 @@ namespace Koreik.Controllers
 
             return tutors;
         }
-        //[Authorize(Roles = "tutor")]
-        /*
-        //[HttpPost]
-        //[Route("api/register/tutor")]
-       
-        public async Task<IActionResult> Register([FromBody] TutorModels model)
-        {
-            var userExists = await userManager.FindByNameAsync(model.Name);
-            if (userExists != null)
-                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User already exists!" });
-
-            ApplicationUser user = new ApplicationUser()
-            {
-                Email = model.Email,
-                SecurityStamp = Guid.NewGuid().ToString(),
-                UserName = model.Username
-            };
-            var result = await userManager.CreateAsync(user, model.Password);
-            if (!result.Succeeded)
-                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User creation failed! Please check user details and try again." });
-
-            return Ok(new Response { Status = "Success", Message = "User created successfully!" });
-        }
-        */
     }
 }

@@ -45,23 +45,7 @@ namespace Koreik.Controllers
         }
         [AllowAnonymous]
         [HttpPost]
-        [Route("login")]
-        /*
-        public async Task<IActionResult> Login([FromBody] LoginModel model)
-        {
-            var user = await _userManager.FindByNameAsync(model.Username);
-            await CreateToken(model.Username, "Tutor");
-            var result =
-                await _signInManager.PasswordSignInAsync(model.Username, model.Password, false, false);
-            return Ok(new
-            {
-                //token = new JwtSecurityTokenHandler().WriteToken(token),
-                //expiration = token.ValidTo,
-                role = _userManager.GetRolesAsync(user)
-            });
-        }
-        */
-        
+        [Route("login")] 
         public async Task<IActionResult> Login([FromBody] LoginModel model)
         {
             var user = await _userManager.FindByNameAsync(model.Username);
@@ -148,80 +132,23 @@ namespace Koreik.Controllers
             ApplicationUser user = new ApplicationUser()
             {
                 Email = model.Email,
-                //SecurityStamp = Guid.NewGuid().ToString(),
+                SecurityStamp = Guid.NewGuid().ToString(),
                 UserName = model.Username
             };
+            var result = await _userManager.CreateAsync(user, model.Password);
+            await _userManager.AddToRoleAsync(user, "Student");
 
             var student = new Student();
-            student.Name = "Ernar";
-            student.Surname = "Xabibulla";
+            student.Name = "Aibek";
+            student.Surname = "Esenpulov";
             student.KlassId = model.KlassId;
             student.IdentityUser = user;
             await _applicationDbContext.Students.AddAsync(student);
             await _applicationDbContext.SaveChangesAsync();
-            await _userManager.AddToRoleAsync(user, "Student");
 
             return Ok(new Response { Status = "Success", Message = "User created successfully!" });
         
         }
         
-        /*
-        [HttpPost]
-        [Route("register/tutor")]
-        public async Task RegisterTutor([FromBody] TutorRegisterModel model)
-        {
-            await _roleManager.CreateAsync(new IdentityRole("Tutor"));
-
-            var user = new IdentityUser();
-            user.Email = model.Email;
-            user.UserName = model.Username;
-            var newUser = await _userManager.CreateAsync(user, model.Password);
-
-            await _userManager.AddToRoleAsync(user, "Tutor");
-
-            var tutor = new Tutor();
-            tutor.Name = "asasd";
-            tutor.Surname = "adwad";
-            tutor.SchoolId = model.SchoolId;
-            tutor.IdentityUser = user;
-            await _applicationDbContext.Tutors.AddAsync(tutor);
-            await _applicationDbContext.SaveChangesAsync();
-            
-            await CreateToken(model.Username, "Tutor");
-
-            var result =
-                await _signInManager.PasswordSignInAsync(model.Username, model.Password, false, false);
-            
-        }
-        
-        private async Task CreateToken(string username, string role)
-        {
-            List<Claim> claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Name, username),
-                new Claim(ClaimTypes.Role, role)
-            };
-
-            var key = AuthOptions.GetSymmetricSecurityKey();
-
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-            var now = DateTime.UtcNow;
-            var token = new JwtSecurityToken(
-                claims: claims,
-                expires: now.Add(TimeSpan.FromMinutes(AuthOptions.LIFETIME)),
-                signingCredentials: creds);
-
-            var jwt = new JwtSecurityTokenHandler().WriteToken(token);
-
-            var response = new
-            {
-                access_token = jwt,
-                username = username
-            };
-            Response.ContentType = "application/json";
-            await Response.WriteAsync(JsonConvert.SerializeObject(response, new JsonSerializerSettings { Formatting = Formatting.Indented }));       
-        }      
-        */
     }
 }

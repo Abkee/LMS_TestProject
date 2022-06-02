@@ -4,9 +4,10 @@
     {
         public Guid Id { get; set; }
         public int grade { get; set; }
+        public string NameSubject { get; set; }
         public Guid SubjectId { get; set; }
-        public SubjectModels Subject { get; set; }
+        public SubjectModels? Subject { get; set; }
         public Guid StudentId { get; set; }
-        public StudentModels Student { get; set; }
+        public StudentModels? Student { get; set; }
     }
 }

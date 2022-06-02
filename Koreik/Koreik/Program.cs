@@ -23,10 +23,13 @@ builder.Services.AddDbContext<ApplicationContext>(options =>
 builder.Services.AddControllers();
 
 builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+                .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationContext>()
                 .AddDefaultTokenProviders();
 
-/*builder.Services.AddAuthentication(x =>
+#region
+/*
+builder.Services.AddAuthentication(x =>
 {
     x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -56,8 +59,9 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>()
             return Task.CompletedTask;
         }
     };
-});*/
-
+});
+*/
+#endregion
 // Adding Authentication  
 builder.Services.AddAuthentication(options =>
 {
