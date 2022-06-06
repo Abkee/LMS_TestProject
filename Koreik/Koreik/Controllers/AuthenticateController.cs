@@ -35,14 +35,6 @@ namespace Koreik.Controllers
             _applicationDbContext = applicationDbContext;
             _signInManager = signInManager;
         }
-        [Authorize]
-        [HttpGet]
-        [Route("GetTutors")]
-        public async Task<IEnumerable<Tutor>> GetTest()
-        {
-            var username = User.Identity.Name;
-            return await _applicationDbContext.Tutors.ToListAsync();
-        }
         [AllowAnonymous]
         [HttpPost]
         [Route("login")] 
@@ -139,8 +131,8 @@ namespace Koreik.Controllers
             await _userManager.AddToRoleAsync(user, "Student");
 
             var student = new Student();
-            student.Name = "Aibek";
-            student.Surname = "Esenpulov";
+            student.Name = "Adilet";
+            student.Surname = "Toktybaev";
             student.KlassId = model.KlassId;
             student.IdentityUser = user;
             await _applicationDbContext.Students.AddAsync(student);

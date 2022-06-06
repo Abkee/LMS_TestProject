@@ -50,11 +50,10 @@ namespace Koreik.Controllers
             await _context.SaveChangesAsync();
             return grade.Id;
         }
-        /*
         [Authorize(Roles = "Tutor")]
         [HttpGet]
         [Route("api/showstudents")]
-        public async Task<List<StudentModels>> ShowStudents()
+        public async Task<List<StudentModels>> ShowStudents([FromBody]Guid subjectId)
         {
             
             var tutorname = User.Identity.Name;
@@ -62,14 +61,19 @@ namespace Koreik.Controllers
                 .Where(x => x.IdentityUser.UserName == tutorname)
                 .Select(x=>x.Id)
                 .SingleAsync();
-            
-            var students = from g in _context.Grades
-                           where g.Tutor
-                           
-            return students;
+            var students = await _context.Subjects
+                .Include(x => x.Students)
+                .Where(s => s.TutorId==tutorid && s.Id == subjectId)
+                .SingleAsync();
+
+            return students.Students.Select(x => new StudentModels
+            {
+                Id = x.Id,
+                Name = x.Name,
+                Surname = x.Surname
+            }).ToList();
 
         }
-        */
         [Authorize(Roles = "Tutor")]
         [HttpGet]
         [Route("api/showsubjects")]
@@ -93,21 +97,45 @@ namespace Koreik.Controllers
 
             return subjects;
         }
+        [Authorize(Roles = "Tutor")]
+        [HttpGet]
+        [Route("api/profile")]
+        public async Task<ProfileModel> ProfileGet()
+        {
+            var tutorname = User.Identity.Name;
+            var tutorid = await _context.Tutors
+                .Where(x => x.IdentityUser.UserName == tutorname)
+                .Select(x => x.Id)
+                .SingleAsync();
+
+            var profile = await (from s in _context.Tutors
+                                 where s.Id == tutorid
+                                 select new ProfileModel
+                                 {
+                                     Name = s.Name,
+                                     Surname = s.Surname,
+                                 }).FirstOrDefaultAsync();
+            return profile;
+        }
 
         [Authorize(Roles = "Tutor")]
         [HttpPost]
-        [Route("api/create/subject")]
-        public async Task<Guid> CreateSubject(SubjectModels subjectModel)
+        [Route("api/update/profile")]
+        public async Task<Guid> ProfilePost(ProfileModel model)
         {
-            var subject = new Subject();
-            subject.Id = subjectModel.Id;
-            subject.Name = subjectModel.Name;
-            subject.TutorId = subjectModel.TutorId;
-            await _context.Subjects.AddAsync(subject);
-            await _context.SaveChangesAsync();
-            return subject.Id;
-        }
+            var tutorname = User.Identity.Name;
+            var tutorid = await _context.Tutors
+                .Where(x => x.IdentityUser.UserName == tutorname)
+                .Select(x => x.Id)
+                .SingleAsync();
 
-        
+            var tutor = await _context.Tutors
+                .Where(x => x.Id == tutorid)
+                .SingleAsync();
+            tutor.Name = model.Name;
+            tutor.Surname = model.Surname;
+            _context.SaveChanges();
+            return tutor.Id;
+        }
     }
 }

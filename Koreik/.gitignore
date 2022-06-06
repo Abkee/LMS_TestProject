@@ -1,0 +1,6 @@
+bin/
+.config/
+Database/
+Properties/
+Migrations/
+appsettings.json
