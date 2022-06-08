@@ -1,0 +1,3 @@
+[submodule "AngularFront"]
+	path = AngularFront
+	url = https://github.com/Abkee/LMS_TestProject
